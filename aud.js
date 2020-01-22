@@ -40,9 +40,10 @@ function play(audio) {
   let a = cache.get(audio)
   if (!a) {
     console.log('play: track not found in cache; caching...')
-    cache.set(audio, a = { src, t: 0 })
+    cache.set(audio, a = { t: 0 })
   }
-  const t = a.t
+
+  a.src = src
 
   src.buffer = audio
   src.connect(ctx.destination)
@@ -50,8 +51,8 @@ function play(audio) {
     console.log(`track ended`)
     // cache.delete(audio)
   }
-  src.start(0, t)
-  console.log(`track started @ ${t}`)
+  src.start(0, a.t)
+  console.log(`track started @ ${a.t}`)
 }
 
 /**
