@@ -1,9 +1,6 @@
 /** @type {AudioContext} */
 const ctx = new (window.AudioContext || window.webkitAudioContext)()
 
-const sampleRate = ctx.sampleRate
-const createBuffer = ctx.createBuffer
-
 /** @type {Map<AudioBuffer, { src: AudioBufferSourceNode, t: number }>} */
 const cache = new Map()
 
@@ -60,23 +57,41 @@ function play(audio) {
 /**
  * @param {AudioBuffer} audio 
  */
+function stop(audio) {
+  freeze(audio, 0)
+}
+
+/**
+ * @param {AudioBuffer} audio 
+ */
 function pause(audio) {
+  freeze(audio, ctx.currentTime)
+}
+
+/**
+ * @param {AudioBuffer} audio 
+ * @param {number} t
+ */
+function freeze(audio, t) {
 
   const a = cache.get(audio)
   if (!a) {
-    console.log('pause: track not found in cache; caching...')
+    console.log('freeze: track not found in cache; caching...')
     return
   }
 
-  console.log(`ctx.currentTime ${ctx.currentTime}`)
+  console.log(`freeze: t ${t}`)
 
-  a.t = ctx.currentTime
+  a.t = t
   a.src.stop()
 }
 
 export {
   ctx,
   getAudio,
+  decodeAudioData,
   play,
-  pause
+  pause,
+  stop,
+  freeze,
 }
